@@ -1,0 +1,34 @@
+name: Build and Package
+
+on:
+  push:
+    branches:
+      - main  # 触发构建的分支
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up JDK
+      uses: actions/setup-java@v2
+      with:
+        java-version: 11
+
+    - name: Build with Gradle
+      run: ./gradlew build
+
+    - name: Package JAR
+      run: |
+        mkdir -p dist
+        cp app/build/libs/*.jar dist/myapp.jar
+      # 这里假设你的 JAR 文件生成在 app/build/libs 目录下
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: myapp
+        path: dist/myapp.jar
